@@ -27,7 +27,7 @@ To install:
 
     pip install sanic-json-logging
 
-Look at ``examples/simple.py`` for a full working example, but this essentially will get you going
+Look at ``examples/simple.py`` for a full working example, but this will essentially get you going
 
 .. code-block:: python
 
@@ -36,14 +36,14 @@ Look at ``examples/simple.py`` for a full working example, but this essentially 
     app = NoAccessLogSanic('app1')
     setup_json_logging(app)
 
-The reason ``NoAccessLogSanic`` is used instead of ``Sanic`` is to disabled the default access logger (it also disabled the LOGO).
+The reason ``NoAccessLogSanic`` is used instead of ``Sanic`` is to disable the default access logger (it also disabled the LOGO).
 
 ``setup_json_logging`` does the following:
 
 - changes the default log formatters to JSON ones
 - also filters out no Keepalive warnings
 - unless told otherwise, will change the asyncio task factory, to implement some rudimentary task-local storage.
-- installs pre and post request middleware, pre to time tasks and generate a uuid4 request id. post to log.
+- installs pre and post request middleware. Pre-request middleware to time tasks and generate a uuid4 request id. Post-request middleware to emit access logs.
 
 If ``setup_json_logging`` changed the task factory, all tasks created from the request's task will contain the request ID.
 

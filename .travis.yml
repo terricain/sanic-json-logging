@@ -2,9 +2,6 @@ language: python
 python:
   - 3.6
 
-services:
-  - docker
-
 install:
   - pip install -Ur requirements-dev.txt
   - pip install .
@@ -18,7 +15,7 @@ deploy:
   distributions: sdist bdist_wheel
   user: terrycain
   password:
-    secure: juznZPYamxjEclkmozGZibcMXg6cfaN95MctmMK0ZJ99xqelHfoX1vx6JuY24YlRaMSQBo1bUtQKM2+PVfGHMAfNGrtkPl5NRC1WAkNLRsE4gIrhUULTecEEdldNWIQ3n+ZXE6VslGkRO92NPe65CN+/huNl5iLvGwGMsEmlv5tjidlgnXDBXDT8jiFBtqXs2CMo0/pw+z9tjXbj+LeKa+gnmbPQGbE18ifOiSE7Z8j/nGa38/JMjqjk5PVR13hiRHxnh6VCrG//iOdEFLuxpnnSuZoOiau/SRv4WM5o7ZVSJHuinLZHv9Lk6OgfF6wlDSX6YaZXSdm8QWMoNG+vkb+5eNLRZkr4vTcqddAEa6t34DS8SZQcHTHY0E7qMknTSeHp8JGL8doOHDQL47rH2DYU31M6tiw5XzCmBZndmdFSw52LYh42EU6QHkjiSVFoU7vIcG7bMSZEmu9c3+aPeZIgP38onCbDBDaPWSq8TLTEPdLu9d8lVm4O80ON/YUMkHAHta2C+ZgVKdqELMJOmO5LBRiAt/47oeKC7dtYtNEky8ZScrtkX5hi397rmz6Z0wGR9oz5BwApxFZ4d/IgdXzwqpDiJmHdcuOxaSS2b2C9TQXyGKhXnFIt2MKwiqciSnIU+BjO5xzeNHS6099ZBCOkHgAN/XrRb9Yd/q4T/SA=
+    secure: gDvhA0wSSFdNb2rg4ywGOSES+pfXMo+fdj1zz8t/sU4cesxSw5bIseJXcKbIEL7WPv68fqyHHN1QG1hU0PDC6AY7U2mELmpJocsjRCrkZdFU/J9hB4hnHkMpS6Q/LPY+s1ks8uMlKOIK4GLmCKR01Iql4yLOKexKT6r6ncxv7F+uhNqiCg6mda7M0tB1AGko7XkfG0bU4qUFDD2enrbYKs0yrVAXJMhMra/mfa9oigxMNjeXi9dC/sAyHZ5U9vidXEUwRCY8gyXFpubezohoBfVr4SingjW8yCfsfYn4CzxhINfHX5a88KUHrZSHPRj5VlwrYRwwbYlxfha8KnEsdM7fqfHItARPT0YPnpR4SQZG+7x43ksXMHkHuTeEc4AaYe+5zZjdUhQMzKDM0KD/7qCMLw4WX7k628Jk3vUAk6wNO8aGDhrhZYVssASa7pfu1C/W33sCobUPRoJvKcIg/sAlWxIiVP3Hh8G/D3w7UruGH05hpALgTR5BpSn+jtJr/gOnkEd/4WKp+6eBp+fgNjmOOLTlHX8zpFvApE/lbFs0kTOQCc66OPBSppjC+kGBs4XdkMSh0MH6h1/H7FGLezfAlZn8ehtjxa7luAE+0CFnckEBMmNSmyvn3cxyh/CSoJaMBzsc8VeFY4Me63wp31f0hXhtBDDbjlvSFXXtW9E=
   on:
     python: 3.6
     repo: terrycain/sanic-json-logging
