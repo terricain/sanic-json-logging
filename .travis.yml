@@ -1,0 +1,28 @@
+language: python
+python:
+  - 3.6
+
+services:
+  - docker
+
+install:
+  - pip install -Ur requirements-dev.txt
+  - pip install .
+  - pip install codecov
+
+script:
+  - make cov
+
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: terrycain
+  password:
+    secure: juznZPYamxjEclkmozGZibcMXg6cfaN95MctmMK0ZJ99xqelHfoX1vx6JuY24YlRaMSQBo1bUtQKM2+PVfGHMAfNGrtkPl5NRC1WAkNLRsE4gIrhUULTecEEdldNWIQ3n+ZXE6VslGkRO92NPe65CN+/huNl5iLvGwGMsEmlv5tjidlgnXDBXDT8jiFBtqXs2CMo0/pw+z9tjXbj+LeKa+gnmbPQGbE18ifOiSE7Z8j/nGa38/JMjqjk5PVR13hiRHxnh6VCrG//iOdEFLuxpnnSuZoOiau/SRv4WM5o7ZVSJHuinLZHv9Lk6OgfF6wlDSX6YaZXSdm8QWMoNG+vkb+5eNLRZkr4vTcqddAEa6t34DS8SZQcHTHY0E7qMknTSeHp8JGL8doOHDQL47rH2DYU31M6tiw5XzCmBZndmdFSw52LYh42EU6QHkjiSVFoU7vIcG7bMSZEmu9c3+aPeZIgP38onCbDBDaPWSq8TLTEPdLu9d8lVm4O80ON/YUMkHAHta2C+ZgVKdqELMJOmO5LBRiAt/47oeKC7dtYtNEky8ZScrtkX5hi397rmz6Z0wGR9oz5BwApxFZ4d/IgdXzwqpDiJmHdcuOxaSS2b2C9TQXyGKhXnFIt2MKwiqciSnIU+BjO5xzeNHS6099ZBCOkHgAN/XrRb9Yd/q4T/SA=
+  on:
+    python: 3.6
+    repo: terrycain/sanic-json-logging
+    tags: true
+
+after_success:
+  - codecov
