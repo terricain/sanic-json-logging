@@ -16,11 +16,11 @@ LOGGING_CONFIG_DEFAULTS = dict(
         }
     },
 
+    root= {
+        'level': 'INFO',
+        'handlers': ['console']
+    },
     loggers={
-        'root': {
-            'level': 'INFO',
-            'handlers': ['console']
-        },
         'sanic.error': {
             'level': 'INFO',
             'handlers': ['console'],
@@ -154,7 +154,11 @@ class JSONReqFormatter(JSONFormatter):
 
         if record.response is not None:  # not Websocket
             message['status_code'] = record.response.status
-            message['length'] = len(record.response.body)
+            if hasattr(record.response, 'body'):
+                message['length'] = len(record.response.body)
+            else:
+                message['length'] = -1
+
             message['type'] = 'access'
         else:
             message['type'] = 'ws_access'
