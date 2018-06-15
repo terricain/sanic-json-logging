@@ -139,6 +139,13 @@ class JSONFormatter(logging.Formatter):
 class JSONReqFormatter(JSONFormatter):
     def format(self, record, serialize=True):
         # Create message dict
+        host = record.request.host
+        try:
+            if 'X-Forwarded-For' in record.request.headers:
+                host = record.request.headers['X-Forwarded-For']
+        except:  # noqa: E722
+            pass
+
         message = OrderedDict((
             ('timestamp', self.format_timestamp(record.created)),
             ('level', record.levelname),
@@ -146,7 +153,7 @@ class JSONReqFormatter(JSONFormatter):
             ('path', record.request.path),
             ('remote', '{0}:{1}'.format(record.request.ip, record.request.port)),
             ('user_agent', record.request.headers['user-agent']),
-            ('host', record.request.host),
+            ('host', host),
             ('response_time', round(record.time, 2)),
             ('req_id', record.req_id),
             ('logger', record.name)
