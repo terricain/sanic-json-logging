@@ -16,7 +16,7 @@ LOGGING_CONFIG_DEFAULTS = dict(
         }
     },
 
-    root= {
+    root={
         'level': 'INFO',
         'handlers': ['console']
     },
