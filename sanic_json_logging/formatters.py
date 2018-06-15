@@ -24,14 +24,14 @@ LOGGING_CONFIG_DEFAULTS = dict(
         'sanic.error': {
             'level': 'INFO',
             'handlers': ['console'],
-            'propagate': True,
+            'propagate': False,
             'qualname': 'sanic.error'
         },
 
         'sanic.access': {
             'level': 'INFO',
             'handlers': ['access_console'],
-            'propagate': True,
+            'propagate': False,
             'qualname': 'sanic.access'
         }
     },
