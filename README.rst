@@ -44,6 +44,7 @@ The reason ``NoAccessLogSanic`` is used instead of ``Sanic`` is to disable the d
 - also filters out no Keepalive warnings
 - unless told otherwise, will change the asyncio task factory, to implement some rudimentary task-local storage.
 - installs pre and post request middleware. Pre-request middleware to time tasks and generate a uuid4 request id. Post-request middleware to emit access logs.
+- will use AWS X-Forwarded-For IPs in the access logs if present
 
 If ``setup_json_logging`` changed the task factory, all tasks created from the request's task will contain the request ID.
 
