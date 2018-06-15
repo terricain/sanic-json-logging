@@ -45,7 +45,8 @@ LOGGING_CONFIG_DEFAULTS = dict(
         'access_console': {
             'class': 'logging.StreamHandler',
             'formatter': 'access',
-            'stream': sys.stdout
+            'stream': sys.stdout,
+            'filters': ['no_keepalive_timeout']
         },
     },
     formatters={
@@ -64,7 +65,7 @@ LOGGING_CONFIG_DEFAULTS = dict(
 class NoKeepaliveFilter(logging.Filter):
     def filter(self, record):
         try:
-            return not record.msg.startswith('KeepAlive Timeout')
+            return not 'KeepAlive Timeout' not in record.msg
         except AttributeError:  # Msg is None
             return True
 
