@@ -63,7 +63,10 @@ LOGGING_CONFIG_DEFAULTS = dict(
 # browser is sending connection keepalive header
 class NoKeepaliveFilter(logging.Filter):
     def filter(self, record):
-        return not record.msg.startswith('KeepAlive Timeout')
+        try:
+            return not record.msg.startswith('KeepAlive Timeout')
+        except AttributeError:  # Msg is None
+            return True
 
 
 class JSONFormatter(logging.Formatter):
