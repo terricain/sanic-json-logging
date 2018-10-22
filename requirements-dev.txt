@@ -2,6 +2,6 @@
 
 pytest==3.9.1
 pytest-sanic==0.1.13
-pytest-cov==2.5.1
+pytest-cov==2.6.0
 flake8==3.5.0
 bumpversion==0.5.3
