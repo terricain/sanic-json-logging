@@ -70,7 +70,7 @@ LOGGING_CONFIG_DEFAULTS = dict(
 class NoKeepaliveFilter(logging.Filter):
     def filter(self, record):
         try:
-            return not 'KeepAlive Timeout' not in record.msg
+            return 'KeepAlive Timeout' not in record.msg
         except AttributeError:  # Msg is None
             return True
 
