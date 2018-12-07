@@ -1,25 +1,21 @@
 language: python
 python:
-  - 3.6
-
+- 3.6
 install:
-  - pip install -Ur requirements-dev.txt
-  - pip install .
-  - pip install codecov
-
+- pip install -Ur requirements-dev.txt
+- pip install .
+- pip install codecov
 script:
-  - make cov
-
+- make cov
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
   user: terrycain
   password:
-    secure: gDvhA0wSSFdNb2rg4ywGOSES+pfXMo+fdj1zz8t/sU4cesxSw5bIseJXcKbIEL7WPv68fqyHHN1QG1hU0PDC6AY7U2mELmpJocsjRCrkZdFU/J9hB4hnHkMpS6Q/LPY+s1ks8uMlKOIK4GLmCKR01Iql4yLOKexKT6r6ncxv7F+uhNqiCg6mda7M0tB1AGko7XkfG0bU4qUFDD2enrbYKs0yrVAXJMhMra/mfa9oigxMNjeXi9dC/sAyHZ5U9vidXEUwRCY8gyXFpubezohoBfVr4SingjW8yCfsfYn4CzxhINfHX5a88KUHrZSHPRj5VlwrYRwwbYlxfha8KnEsdM7fqfHItARPT0YPnpR4SQZG+7x43ksXMHkHuTeEc4AaYe+5zZjdUhQMzKDM0KD/7qCMLw4WX7k628Jk3vUAk6wNO8aGDhrhZYVssASa7pfu1C/W33sCobUPRoJvKcIg/sAlWxIiVP3Hh8G/D3w7UruGH05hpALgTR5BpSn+jtJr/gOnkEd/4WKp+6eBp+fgNjmOOLTlHX8zpFvApE/lbFs0kTOQCc66OPBSppjC+kGBs4XdkMSh0MH6h1/H7FGLezfAlZn8ehtjxa7luAE+0CFnckEBMmNSmyvn3cxyh/CSoJaMBzsc8VeFY4Me63wp31f0hXhtBDDbjlvSFXXtW9E=
+    secure: bX38Kb9hIpckv9X7uNvd3QgP/7GXYC5l7dYNR1B31pBq2s0dspdGBOIw3BsJLo9sXC5rDSjHzVFhz2hLHYUiFs+q+YOWdp9jOEPCTtUxovLosGA/5/l2FFRnt+JVsEefRTn34jGO5tfFP91ESKSL6Q82WsGv8HZaGkgcCMJVSNfaUb4R30VAhDQuEF15qw9X6igKhH48fK+QZVYs59CpWvdMMVhS5W5UPzrHe+odqdmXNQmSUbyOD/Y8TvOOa3LUnwXgYM1IlGBC6CCLavfSZ+dXI7sW2R4Th4niRLgBX9pCcKDnHxZO16FUGEihcNl6ffXFa8e2JSCm9X/0pXXiNprx/RWYOaIP6zTWeFLFFIfAS+4K9Xvbo5ZwIKyqITA3YEjaIoW1KxWxyodm5pqi2FwS4HhLjPwRSTPVt/Xem5rZySyEURSeZpWsDU8RleYerDAYuruCwnF0W8HHdfR8ASMoSjAV0VkTkqtjHxwxUP8yRg3Q/8TiootNq3gQUhW7nt4YPZwtbU0DeP1Vpdhmi/6BYZSLTlhkG5sPKGMyMIHex6KFI9lgsXxJ5r1dOF5ZbTBQmBiC24MNcEB6OF9+qlDGWCcqW1pSC6xwfTrCMxtvoog+qN9bLS2+6W/TzGySXF0D2/X8q/2hVLBB8pvliQcmO2KdR7NXg1JZpSxaxKs=
   on:
     python: 3.6
     repo: terrycain/sanic-json-logging
     tags: true
-
 after_success:
-  - codecov
+- codecov
