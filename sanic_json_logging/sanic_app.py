@@ -12,3 +12,8 @@ class NoAccessLogSanic(sanic.Sanic):
         if 'access_log' not in kwargs:
             kwargs['access_log'] = False
         return super(NoAccessLogSanic, self).run(*args, **kwargs)
+
+    def _helper(self, *args, **kwargs):
+        result = super(NoAccessLogSanic, self)._helper(*args, **kwargs)
+        result['access_log'] = False
+        return result
