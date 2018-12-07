@@ -8,7 +8,7 @@ from sanic_json_logging.formatters import LOGGING_CONFIG_DEFAULTS
 from sanic_json_logging.sanic_app import NoAccessLogSanic
 
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 __all__ = ['setup_json_logging', 'NoAccessLogSanic']
 
 
