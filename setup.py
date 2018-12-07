@@ -6,7 +6,7 @@ with open('README.rst') as readme_file:
 
 setup(
     name='sanic-json-logging',
-    version='0.3.3',
+    version='1.0.0',
     description="Simple library to emit json formatted logs to stdout",
     long_description=readme,
     author="Terry Cain",
