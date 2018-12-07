@@ -1,4 +1,5 @@
 language: python
+
 python:
   - 3.6
 
@@ -7,7 +8,7 @@ install:
   - pip install .
   - pip install codecov
 
-script:
+cript:
   - make cov
 
 deploy:
@@ -15,7 +16,7 @@ deploy:
   distributions: sdist bdist_wheel
   user: terrycain
   password:
-    secure: gDvhA0wSSFdNb2rg4ywGOSES+pfXMo+fdj1zz8t/sU4cesxSw5bIseJXcKbIEL7WPv68fqyHHN1QG1hU0PDC6AY7U2mELmpJocsjRCrkZdFU/J9hB4hnHkMpS6Q/LPY+s1ks8uMlKOIK4GLmCKR01Iql4yLOKexKT6r6ncxv7F+uhNqiCg6mda7M0tB1AGko7XkfG0bU4qUFDD2enrbYKs0yrVAXJMhMra/mfa9oigxMNjeXi9dC/sAyHZ5U9vidXEUwRCY8gyXFpubezohoBfVr4SingjW8yCfsfYn4CzxhINfHX5a88KUHrZSHPRj5VlwrYRwwbYlxfha8KnEsdM7fqfHItARPT0YPnpR4SQZG+7x43ksXMHkHuTeEc4AaYe+5zZjdUhQMzKDM0KD/7qCMLw4WX7k628Jk3vUAk6wNO8aGDhrhZYVssASa7pfu1C/W33sCobUPRoJvKcIg/sAlWxIiVP3Hh8G/D3w7UruGH05hpALgTR5BpSn+jtJr/gOnkEd/4WKp+6eBp+fgNjmOOLTlHX8zpFvApE/lbFs0kTOQCc66OPBSppjC+kGBs4XdkMSh0MH6h1/H7FGLezfAlZn8ehtjxa7luAE+0CFnckEBMmNSmyvn3cxyh/CSoJaMBzsc8VeFY4Me63wp31f0hXhtBDDbjlvSFXXtW9E=
+    secure: ZsV9kQmAydDRgfogp+sg1tRDwA8yh9YfU2AqP7fc7cu0kofsevtZ13d45WzIc5TC98Any5p971zEwc6R/x+yAbOjllx4LC5YdeTJQxmc3tT2dWu2oTlIlJ7aUQU5qcBgf5QWkfjaYjOEzEkb2M8tziMkg1Y2LcrgcvLVvob6vOm5lolMMnY05Mytsr6PD3GLaqG6a2XFAmmPPHhySx8P0IV1p43zCE+1Hli0BcQIyjvNayJ1h71wtxcqiIt2rW97F53dLYQWP18GPh0hQEoAb6obYrbFKHTpvtUP3BXvcJTsYczrFKMU/J3lxTF4NEY0idajyErNih+D5ih7Lg9vQbAACtf+YcwbfyKgrA/Ws0rG36IsCVKfwHa4FIPlgiqJpIn0ZffaDF4asUSkTl3vGC44Z7BISf7pakgeA28Ss2AttSwTgfJ8apuiNJWP9m5jpfw6kjpPJhbwAGaDA1OfU5+SU+a/yrUgBFadh6z24WKKO1uCY2YVR4NioGlHWiO71Nk36OZPECfzMcRtvc+wzLISasRL9eGrN48wmBzFR/C/o2NW6rFO+UcBWW3QcR3e+BgMERc/GGSnzkfQi6lcpNzt/BGuaX9CHSADM7ywxb6ESs4X+tRt//ZbmJZ7xnBlllgk4YlIVkfQh3iemsZOoNDNbcTtGqp7kAKr07KuVls=
   on:
     python: 3.6
     repo: terrycain/sanic-json-logging
