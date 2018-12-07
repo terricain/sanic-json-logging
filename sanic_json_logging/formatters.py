@@ -21,6 +21,11 @@ LOGGING_CONFIG_DEFAULTS = dict(
         'handlers': ['console']
     },
     loggers={
+        'root': {
+            'level': 'INFO',
+            'handlers': [],
+            'propagate': True,
+        },
         'sanic.error': {
             'level': 'INFO',
             'handlers': ['console'],
