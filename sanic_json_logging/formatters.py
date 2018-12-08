@@ -71,7 +71,7 @@ class NoKeepaliveFilter(logging.Filter):
     def filter(self, record):
         try:
             return 'KeepAlive Timeout' not in record.msg
-        except:  # Msg is None
+        except:  # noqa: E722
             return True
 
 
