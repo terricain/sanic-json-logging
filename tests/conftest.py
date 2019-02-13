@@ -1,4 +1,5 @@
 import logging
+from contextlib import contextmanager
 
 from sanic import response
 import pytest
@@ -80,3 +81,16 @@ def app_alt():
 @pytest.fixture
 def test_alt_cli(loop, app_alt, test_client):
     return loop.run_until_complete(test_client(app_alt))
+
+
+@pytest.fixture
+def logs(caplog):
+    @contextmanager
+    def _f(logger_name):
+        caplog.clear()
+        logger = logging.getLogger(logger_name)
+        logger.addHandler(caplog.handler)
+        yield caplog
+        logger.removeHandler(caplog.handler)
+
+    return _f

@@ -161,7 +161,7 @@ class JSONReqFormatter(JSONFormatter):
             ('method', record.request.method),
             ('path', record.request.path),
             ('remote', '{0}:{1}'.format(record.request.ip, record.request.port)),
-            ('user_agent', record.request.headers['user-agent']),
+            ('user_agent', record.request.headers.get('user-agent')),
             ('host', host),
             ('response_time', round(record.time, 2)),
             ('req_id', record.req_id),

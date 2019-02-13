@@ -1,4 +1,7 @@
+import json
 import logging
+
+from sanic_json_logging.formatters import JSONReqFormatter
 
 
 async def test_disabling_access_logging(no_log_test_cli, caplog):
@@ -17,35 +20,41 @@ async def test_disabling_access_logging(no_log_test_cli, caplog):
         assert record.name not in ('access', 'sanic.access')
 
 
-async def test_json_access_logging(test_cli, caplog):
+async def test_json_access_logging(test_cli, logs):
     """
     GET request
     """
-    caplog.set_level(logging.INFO)
+    with logs('sanic.access') as caplog:
+        resp = await test_cli.get('/test_get')
+        assert resp.status == 200
 
-    resp = await test_cli.get('/test_get')
-    assert resp.status == 200
+        # We should get no access logging
+        for log_record in caplog.records:
+            if log_record.name != 'sanic.access':
+                continue
 
-    # We should get no access logging
-    for record in caplog.records:
-        if record.name == 'sanic.access':
             # Check log record has data passed from access logging middleware
-            assert hasattr(record, 'request')
-            assert hasattr(record, 'response')
-            assert hasattr(record, 'time')
-            assert hasattr(record, 'req_id')
+            assert hasattr(log_record, 'request')
+            assert hasattr(log_record, 'response')
+            assert hasattr(log_record, 'time')
+            assert hasattr(log_record, 'req_id')
 
-# Currently cant get pytest to do tasklocal
-# async def test_normal_log_has_req_id(test_cli, caplog):
-#     """
-#     GET request
-#     """
-#     caplog.set_level(logging.INFO)
-#
-#     resp = await test_cli.get('/test_get')
-#     assert resp.status == 200
-#
-#     # We should get no access logging
-#     for record in caplog.records:
-#         if record.name == 'root':
-#             assert hasattr(record, 'req_id')
+
+async def test_json_access_logging_no_ua(test_cli, logs):
+    """
+    GET request
+    """
+    formatter = JSONReqFormatter()
+
+    with logs('sanic.access') as caplog:
+        resp = await test_cli.get('/test_get', skip_auto_headers=['User-Agent'])
+        assert resp.status == 200
+
+        for log_record in caplog.records:
+            if log_record.name != 'sanic.access':
+                continue
+
+            rec = formatter.format(log_record)
+            rec = json.loads(rec)
+            assert rec['method'] == 'GET'
+            assert rec['user_agent'] is None
