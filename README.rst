@@ -83,3 +83,10 @@ And if you log to the ``root`` logger, inside a request, it'll look like this.
       "req_id": "795617c7-b514-4ed9-bb63-cc4fcd883c3d"
     }
 
+Changelog
+---------
+
+
+1.2.0 - Fixed UA header bug, fixed tests
+
+1.1.1 - Pretty much first decent version
