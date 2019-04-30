@@ -86,7 +86,7 @@ And if you log to the ``root`` logger, inside a request, it'll look like this.
 Changelog
 ---------
 
-.
+1.3.0 - Added Request ID to `request` dict, fixed move to travis.com
 
 1.2.0 - Fixed UA header bug, fixed tests
 
