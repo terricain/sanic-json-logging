@@ -1,7 +1,7 @@
 -e .
 
-pytest==4.2.1
-pytest-sanic==0.1.15
+pytest==4.4.1
+pytest-sanic==1.0.0
 pytest-cov==2.6.1
-flake8==3.7.5
+flake8==3.7.7
 bumpversion==0.5.3
