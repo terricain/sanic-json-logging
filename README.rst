@@ -5,8 +5,8 @@ sanic-json-logging
 .. image:: https://img.shields.io/pypi/v/sanic-json-logging.svg
         :target: https://pypi.python.org/pypi/sanic-json-logging
 
-.. image:: https://img.shields.io/travis/terrycain/sanic-json-logging.svg
-        :target: https://travis-ci.org/terrycain/sanic-json-logging
+.. image:: https://travis-ci.com/terrycain/sanic-json-logging.svg?branch=master
+        :target: https://travis-ci.com/terrycain/sanic-json-logging
 
 .. image:: https://codecov.io/gh/terrycain/sanic-json-logging/branch/master/graph/badge.svg
         :target: https://codecov.io/gh/terrycain/sanic-json-logging
