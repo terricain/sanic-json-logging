@@ -34,11 +34,17 @@ def setup_json_logging(app, configure_task_local_storage=True, context_var='cont
         Setup unique request ID and start time
         :param request: Web request
         """
+        req_id = str(uuid.uuid4())
+        start_time = time.perf_counter()
+
+        request['req_id'] = req_id
+        request['req_start'] = start_time
+
         current_task = asyncio.Task.current_task()
         if current_task:
             if hasattr(current_task, 'context'):
-                current_task.context['req_id'] = str(uuid.uuid4())
-                current_task.context['req_start'] = time.perf_counter()
+                current_task.context['req_id'] = req_id
+                current_task.context['req_start'] = start_time
             else:
                 current_task.context = {
                     'req_id': str(uuid.uuid4()),
@@ -54,13 +60,8 @@ def setup_json_logging(app, configure_task_local_storage=True, context_var='cont
         :param response: HTTP Response
         :return:
         """
-        req_id = 'unknown'
-        time_taken = -1
-
-        current_task = asyncio.Task.current_task()
-        if current_task and hasattr(current_task, 'context'):
-            req_id = current_task.context['req_id']
-            time_taken = time.perf_counter() - current_task.context['req_start']
+        req_id = request['req_id']
+        time_taken = time.perf_counter() - request['req_start']
 
         req_logger.info(None, extra={'request': request, 'response': response, 'time': time_taken, 'req_id': req_id})
 
