@@ -60,10 +60,11 @@ def setup_json_logging(app, configure_task_local_storage=True, context_var='cont
         :param response: HTTP Response
         :return:
         """
-        req_id = request['req_id']
-        time_taken = time.perf_counter() - request['req_start']
+        if app.config.ACCESS_LOG:
+            req_id = request['req_id']
+            time_taken = time.perf_counter() - request['req_start']
 
-        req_logger.info(None, extra={'request': request, 'response': response, 'time': time_taken, 'req_id': req_id})
+            req_logger.info(None, extra={'request': request, 'response': response, 'time': time_taken, 'req_id': req_id})
 
 
 def _task_factory(loop, coro, context_var='context') -> asyncio.Task:
