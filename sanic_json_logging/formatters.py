@@ -3,6 +3,7 @@ import datetime
 import logging
 import json
 import sys
+import os
 from collections import OrderedDict
 
 
@@ -86,6 +87,7 @@ class JSONFormatter(logging.Formatter):
         super(JSONFormatter, self).__init__(*args, **kwargs)
 
         self._context_attr = context
+        self._pid = os.getpid()
 
     @staticmethod
     def format_timestamp(time):
@@ -125,6 +127,7 @@ class JSONFormatter(logging.Formatter):
             ('message', msg),
             ('type', msg_type),
             ('logger', record.name),
+            ('worker', self._pid)
         ))
 
         if msg_type == 'log':
@@ -154,24 +157,29 @@ class JSONFormatter(logging.Formatter):
 class JSONReqFormatter(JSONFormatter):
     def format(self, record, serialize=True):
         # Create message dict
-        host = record.request.host
         try:
-            if 'X-Forwarded-For' in record.request.headers:
-                host = record.request.headers['X-Forwarded-For']
+            host = record.request.host
         except:  # noqa: E722
-            pass
+            # Got a few errors with curl :/
+            host = None
+
+        # Extract real ip if in AWS (or compatible)
+        ip = record.request.headers.get('X-Forwarded-For', record.request.ip)
+        port = record.request.headers.get('X-Forwarded-Port', record.request.port)
 
         message = OrderedDict((
             ('timestamp', self.format_timestamp(record.created)),
             ('level', record.levelname),
             ('method', record.request.method),
+            ('type', 'access'),
             ('path', record.request.path),
-            ('remote', '{0}:{1}'.format(record.request.ip, record.request.port)),
+            ('remote', '{0}:{1}'.format(ip, port)),
             ('user_agent', record.request.headers.get('user-agent')),
             ('host', host),
             ('response_time', round(record.time, 2)),
             ('req_id', record.req_id),
-            ('logger', record.name)
+            ('logger', record.name),
+            ('worker', self._pid)
         ))
 
         if record.response is not None:  # not Websocket
