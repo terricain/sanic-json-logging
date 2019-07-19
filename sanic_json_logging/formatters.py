@@ -32,6 +32,12 @@ LOGGING_CONFIG_DEFAULTS = dict(
             'propagate': False,
             'qualname': 'sanic.error'
         },
+        'sanic.root': {
+            'level': 'INFO',
+            'handlers': [],
+            'propagate': False,
+            'qualname': 'sanic.root'
+        },
 
         'sanic.access': {
             'level': 'INFO',

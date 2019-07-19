@@ -12,7 +12,9 @@ __version__ = '1.3.0'
 __all__ = ['setup_json_logging', 'NoAccessLogSanic']
 
 
-def setup_json_logging(app, configure_task_local_storage=True, context_var='context'):
+def setup_json_logging(app, configure_task_local_storage=True,
+                       context_var='context',
+                       disable_json_access_log=False):
     """
     Sets up request logging
     """
@@ -51,19 +53,23 @@ def setup_json_logging(app, configure_task_local_storage=True, context_var='cont
                     'req_start': time.perf_counter()
                 }
 
-    # This performs the role of access logs
-    @app.middleware('response')
-    async def log_json_post(request, response):
-        """
-        Calculate response time, then log access json
-        :param request: Web request
-        :param response: HTTP Response
-        :return:
-        """
-        req_id = request['req_id']
-        time_taken = time.perf_counter() - request['req_start']
+    if not disable_json_access_log:
+        # Prevent
+        app.config.ACCESS_LOG = False
 
-        req_logger.info(None, extra={'request': request, 'response': response, 'time': time_taken, 'req_id': req_id})
+        # This performs the role of access logs
+        @app.middleware('response')
+        async def log_json_post(request, response):
+            """
+            Calculate response time, then log access json
+            :param request: Web request
+            :param response: HTTP Response
+            :return:
+            """
+            req_id = request['req_id']
+            time_taken = time.perf_counter() - request['req_start']
+
+            req_logger.info(None, extra={'request': request, 'response': response, 'time': time_taken, 'req_id': req_id})
 
 
 def _task_factory(loop, coro, context_var='context') -> asyncio.Task:

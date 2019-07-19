@@ -31,12 +31,12 @@ Look at ``examples/simple.py`` for a full working example, but this will essenti
 
 .. code-block:: python
 
-    from sanic_json_logging import setup_json_logging, NoAccessLogSanic
+    import sanic
+    from sanic_json_logging import setup_json_logging
 
-    app = NoAccessLogSanic('app1')
+    app = sanic.Sanic()
     setup_json_logging(app)
 
-The reason ``NoAccessLogSanic`` is used instead of ``Sanic`` is to disable the default access logger (it also disabled the LOGO).
 
 ``setup_json_logging`` does the following:
 
@@ -47,6 +47,7 @@ The reason ``NoAccessLogSanic`` is used instead of ``Sanic`` is to disable the d
 - will use AWS X-Forwarded-For IPs in the access logs if present
 
 If ``setup_json_logging`` changed the task factory, all tasks created from the request's task will contain the request ID.
+You can pass ``disable_json_access_log=True`` to the setup function which will disable the configuration of JSON access logging
 
 Currently I have it outputting access logs like
 
