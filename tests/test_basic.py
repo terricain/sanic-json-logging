@@ -1,5 +1,4 @@
 import json
-import logging
 
 from sanic_json_logging.formatters import JSONReqFormatter
 
