@@ -1,17 +1,18 @@
 import logging
 from contextlib import contextmanager
 
+import sanic
 from sanic import response
 import pytest
 
-from sanic_json_logging import NoAccessLogSanic, setup_json_logging, _task_factory
+from sanic_json_logging import setup_json_logging, _task_factory
 
 
 # For testing raw access log suppression
 @pytest.fixture
 def no_log_app():
     # Create app
-    app = NoAccessLogSanic("test_sanic_app")
+    app = sanic.Sanic("test_sanic_app")
 
     logger = logging.getLogger('root')
 
@@ -37,7 +38,7 @@ def set_task_factory(loop):
 @pytest.fixture
 def app():
     # Create app
-    app = NoAccessLogSanic("test_sanic_app")
+    app = sanic.Sanic("test_sanic_app")
     setup_json_logging(app)
 
     logger = logging.getLogger('root')
@@ -62,7 +63,7 @@ def test_cli(loop, app, test_client):
 @pytest.fixture
 def app_alt():
     # Create app
-    app = NoAccessLogSanic("test_sanic_app")
+    app = sanic.Sanic("test_sanic_app")
     setup_json_logging(app, context_var='test1')
 
     logger = logging.getLogger('root')

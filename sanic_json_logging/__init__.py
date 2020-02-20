@@ -5,15 +5,14 @@ import time
 import uuid
 
 from sanic_json_logging.formatters import LOGGING_CONFIG_DEFAULTS
-from sanic_json_logging.sanic_app import NoAccessLogSanic
 
 
 __version__ = '2.0.0'
-__all__ = ['setup_json_logging', 'NoAccessLogSanic']
+__all__ = ['setup_json_logging']
 
 
 def setup_json_logging(app, configure_task_local_storage=True,
-                       context_var='context',
+                       context_var='sanicjsonlogging',
                        disable_json_access_log=False):
     """
     Sets up request logging
@@ -42,16 +41,18 @@ def setup_json_logging(app, configure_task_local_storage=True,
         request['req_id'] = req_id
         request['req_start'] = start_time
 
-        current_task = asyncio.Task.current_task()
-        if current_task:
-            if hasattr(current_task, 'context'):
-                current_task.context['req_id'] = req_id
-                current_task.context['req_start'] = start_time
-            else:
-                current_task.context = {
-                    'req_id': str(uuid.uuid4()),
-                    'req_start': time.perf_counter()
-                }
+        if configure_task_local_storage:
+            current_task = asyncio.Task.current_task()
+            if current_task:
+                if hasattr(current_task, context_var):
+                    if isinstance(getattr(current_task, context_var), dict):  # Guard against different non-dict context objs
+                        getattr(current_task, context_var)['req_id'] = req_id
+                        getattr(current_task, context_var)['req_start'] = start_time
+                else:
+                    setattr(current_task, context_var, {
+                        'req_id': req_id,
+                        'req_start': time.perf_counter()
+                    })
 
     if not disable_json_access_log:
         # Prevent
@@ -66,8 +67,13 @@ def setup_json_logging(app, configure_task_local_storage=True,
             :param response: HTTP Response
             :return:
             """
-            req_id = request['req_id']
-            time_taken = time.perf_counter() - request['req_start']
+            # Pre middleware doesnt run on exception
+            if 'req_id' in request:
+                req_id = request['req_id']
+                time_taken = time.perf_counter() - request['req_start']
+            else:
+                req_id = str(uuid.uuid4())
+                time_taken = -1
 
             req_logger.info(None, extra={'request': request, 'response': response, 'time': time_taken, 'req_id': req_id})
 
@@ -87,6 +93,6 @@ def _task_factory(loop, coro, context_var='context') -> asyncio.Task:
     # Share context with new task if possible
     current_task = asyncio.Task.current_task(loop=loop)
     if current_task is not None and hasattr(current_task, context_var):
-        setattr(task, context_var, current_task.context)
+        setattr(task, context_var, getattr(current_task, context_var))
 
     return task

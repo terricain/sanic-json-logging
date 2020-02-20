@@ -83,10 +83,10 @@ class NoKeepaliveFilter(logging.Filter):
 
 
 class JSONFormatter(logging.Formatter):
-    def __init__(self, *args, context='context', **kwargs):
+    def __init__(self, *args, context_var='context', **kwargs):
         super(JSONFormatter, self).__init__(*args, **kwargs)
 
-        self._context_attr = context
+        self._context_attr = LOGGING_CONFIG_DEFAULTS['formatters']['generic'].get('context', context_var)
         self._pid = os.getpid()
 
     @staticmethod
@@ -144,9 +144,8 @@ class JSONFormatter(logging.Formatter):
 
         try:
             current_task = asyncio.Task.current_task()
-            # TODO make 'context' configurable by __init__(arg) from logging config
-            if current_task and hasattr(current_task, 'context'):
-                message['req_id'] = current_task.context.get('req_id', 'unknown')
+            if current_task and hasattr(current_task, self._context_attr):
+                message['req_id'] = getattr(current_task, self._context_attr).get('req_id', 'unknown')
         except Exception:
             pass
 

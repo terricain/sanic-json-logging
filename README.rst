@@ -47,7 +47,8 @@ Look at ``examples/simple.py`` for a full working example, but this will essenti
 - will use AWS X-Forwarded-For IPs in the access logs if present
 
 If ``setup_json_logging`` changed the task factory, all tasks created from the request's task will contain the request ID.
-You can pass ``disable_json_access_log=True`` to the setup function which will disable the configuration of JSON access logging
+You can pass ``disable_json_access_log=True`` to the setup function which will disable the configuration of JSON access logging.
+Setting ``configure_task_local_storage`` to false will disable storing request IDs inside the task object which will
 
 Currently I have it outputting access logs like
 

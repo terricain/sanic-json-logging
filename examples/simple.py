@@ -3,11 +3,11 @@ import logging
 import sanic.response
 import sanic.request
 
-from sanic_json_logging import setup_json_logging, NoAccessLogSanic
+from sanic_json_logging import setup_json_logging
 
 
-app = NoAccessLogSanic('app1')
-setup_json_logging(app)
+app = sanic.Sanic('app1')
+setup_json_logging(app, context_var='test1')
 
 logger = logging.getLogger('root')
 
