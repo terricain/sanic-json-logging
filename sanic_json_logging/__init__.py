@@ -7,7 +7,7 @@ import uuid
 from sanic_json_logging.formatters import LOGGING_CONFIG_DEFAULTS
 
 
-__version__ = '2.0.0'
+__version__ = '3.0.0'
 __all__ = ['setup_json_logging']
 
 
