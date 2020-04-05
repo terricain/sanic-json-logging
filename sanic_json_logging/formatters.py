@@ -121,6 +121,10 @@ class JSONFormatter(logging.Formatter):
             exc += self.formatStack(record.stack_info)
         exc = exc.lstrip('\n').replace('\n', '<br>')
 
+        # convert to string if not primitive JSON dump values
+        # https://docs.python.org/3/library/json.html#json.JSONDecoder
+        if type(msg) not in [dict, list, str, int, float, bool, None]:
+            msg = str(msg)
         message = OrderedDict((
             ('timestamp', self.format_timestamp(record.created)),
             ('level', record.levelname),
