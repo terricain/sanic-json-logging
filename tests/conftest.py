@@ -51,6 +51,14 @@ def app():
         await log()
         return response.text('')
 
+    @app.route("/test_get_custom_log", methods=['GET'])
+    async def test_get_custom_log(request):
+        class MyClass:
+            def __str__(self):
+                return "my class"
+        await logger.info(MyClass())
+        return response.text('')
+
     yield app
 
 
