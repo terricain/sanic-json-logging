@@ -51,20 +51,35 @@ def app():
         await log()
         return response.text('')
 
-    @app.route("/test_get_custom_log", methods=['GET'])
-    async def test_get_custom_log(request):
-        class MyClass:
-            def __str__(self):
-                return "my class"
-        await logger.info(MyClass())
-        return response.text('')
-
     yield app
 
 
 @pytest.fixture
 def test_cli(loop, app, test_client):
     return loop.run_until_complete(test_client(app))
+
+
+@pytest.fixture
+def custom_class_log_app():
+    # Create app
+    app = sanic.Sanic("test_sanic_app")
+
+    logger = logging.getLogger('root')
+
+    @app.route("/test_get", methods=['GET'])
+    async def test_get(request):
+        class MyClass:
+            def __str__(self):
+                return "my class"
+        logger.info(MyClass())
+        return response.text('')
+
+    yield app
+
+
+@pytest.fixture
+def custom_class_log_test_cli(loop, custom_class_log_app, test_client):
+    return loop.run_until_complete(test_client(custom_class_log_app))
 
 
 # For testing alternate context_var

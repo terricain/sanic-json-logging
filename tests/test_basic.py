@@ -1,6 +1,6 @@
 import json
 
-from sanic_json_logging.formatters import JSONReqFormatter
+from sanic_json_logging.formatters import JSONReqFormatter, JSONFormatter
 
 
 async def test_json_access_logging(test_cli, logs):
@@ -41,19 +41,20 @@ async def test_json_access_logging_no_ua(test_cli, logs):
             rec = json.loads(rec)
             assert rec['method'] == 'GET'
             assert rec['user_agent'] is None
-            
-async def test_json_convert_to_string_unknown_class(test_cli, logs):
+
+
+async def test_json_custom_class_logging(custom_class_log_test_cli, logs):
     """
     GET request
     """
-    formatter = JSONReqFormatter()
+    formatter = JSONFormatter()
 
     with logs('sanic.access') as caplog:
-        resp = await test_cli.get('/test_get_custom_log')
+        resp = await custom_class_log_test_cli.get('/test_get')
         assert resp.status == 200
 
         for log_record in caplog.records:
-            if log_record.name != 'sanic.access':
+            if log_record.name == 'sanic.access':
                 continue
 
             rec = formatter.format(log_record)
