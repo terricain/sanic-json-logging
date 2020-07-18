@@ -14,7 +14,7 @@ setup(
     url='https://github.com/terrycain/sanic-json-logging',
     packages=find_packages(include=['sanic_json_logging*']),
     include_package_data=True,
-    install_requires=['sanic>=19.3.1'],
+    install_requires=['sanic>=19.12.0'],
     license="Apache 2",
     zip_safe=False,
     keywords='sanic json logging',
@@ -27,5 +27,6 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    test_suite='tests'
+    test_suite='tests',
+    python_requires='>=3.6',
 )

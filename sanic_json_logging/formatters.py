@@ -6,6 +6,7 @@ import sys
 import os
 from collections import OrderedDict
 
+PY_37 = sys.version_info[1] >= 7
 
 LOGGING_CONFIG_DEFAULTS = dict(
     version=1,
@@ -147,7 +148,11 @@ class JSONFormatter(logging.Formatter):
             message['data'] = record.data
 
         try:
-            current_task = asyncio.Task.current_task()
+            if PY_37:
+                current_task = asyncio.current_task()
+            else:
+                current_task = asyncio.Task.current_task()
+
             if current_task and hasattr(current_task, self._context_attr):
                 message['req_id'] = getattr(current_task, self._context_attr).get('req_id', 'unknown')
         except Exception:

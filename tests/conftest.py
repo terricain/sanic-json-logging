@@ -25,8 +25,8 @@ def no_log_app():
 
 
 @pytest.fixture
-def no_log_test_cli(loop, no_log_app, test_client):
-    return loop.run_until_complete(test_client(no_log_app))
+def no_log_test_cli(loop, no_log_app, sanic_client):
+    return loop.run_until_complete(sanic_client(no_log_app))
 
 
 @pytest.fixture(autouse=True)
@@ -55,8 +55,8 @@ def app():
 
 
 @pytest.fixture
-def test_cli(loop, app, test_client):
-    return loop.run_until_complete(test_client(app))
+def test_cli(loop, app, sanic_client):
+    return loop.run_until_complete(sanic_client(app))
 
 
 @pytest.fixture
@@ -78,8 +78,8 @@ def custom_class_log_app():
 
 
 @pytest.fixture
-def custom_class_log_test_cli(loop, custom_class_log_app, test_client):
-    return loop.run_until_complete(test_client(custom_class_log_app))
+def custom_class_log_test_cli(loop, custom_class_log_app, sanic_client):
+    return loop.run_until_complete(sanic_client(custom_class_log_app))
 
 
 # For testing alternate context_var
@@ -103,8 +103,8 @@ def app_alt():
 
 
 @pytest.fixture
-def test_alt_cli(loop, app_alt, test_client):
-    return loop.run_until_complete(test_client(app_alt))
+def test_alt_cli(loop, app_alt, sanic_client):
+    return loop.run_until_complete(sanic_client(app_alt))
 
 
 @pytest.fixture

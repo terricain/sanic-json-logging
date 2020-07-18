@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import logging.config
+import sys
 import time
 import uuid
 
@@ -9,6 +10,8 @@ from sanic_json_logging.formatters import LOGGING_CONFIG_DEFAULTS
 
 __version__ = '3.0.0'
 __all__ = ['setup_json_logging']
+
+PY_37 = sys.version_info[1] >= 7
 
 
 def setup_json_logging(app, configure_task_local_storage=True,
@@ -38,11 +41,16 @@ def setup_json_logging(app, configure_task_local_storage=True,
         req_id = str(uuid.uuid4())
         start_time = time.perf_counter()
 
-        request['req_id'] = req_id
-        request['req_start'] = start_time
+        request.ctx.req_id = req_id
+        request.ctx.req_start = start_time
 
         if configure_task_local_storage:
-            current_task = asyncio.Task.current_task()
+
+            if PY_37:
+                current_task = asyncio.current_task()
+            else:
+                current_task = asyncio.Task.current_task()
+
             if current_task:
                 if hasattr(current_task, context_var):
                     if isinstance(getattr(current_task, context_var), dict):  # Guard against different non-dict context objs
@@ -69,8 +77,8 @@ def setup_json_logging(app, configure_task_local_storage=True,
             """
             # Pre middleware doesnt run on exception
             if 'req_id' in request:
-                req_id = request['req_id']
-                time_taken = time.perf_counter() - request['req_start']
+                req_id = request.ctx.req_id
+                time_taken = time.perf_counter() - request.ctx.req_start
             else:
                 req_id = str(uuid.uuid4())
                 time_taken = -1
@@ -91,7 +99,11 @@ def _task_factory(loop, coro, context_var='context') -> asyncio.Task:
         del task._source_traceback[-1]  # flake8: noqa
 
     # Share context with new task if possible
-    current_task = asyncio.Task.current_task(loop=loop)
+    if PY_37:
+        current_task = asyncio.current_task(loop=loop)
+    else:
+        current_task = asyncio.Task.current_task(loop=loop)
+
     if current_task is not None and hasattr(current_task, context_var):
         setattr(task, context_var, getattr(current_task, context_var))
 
