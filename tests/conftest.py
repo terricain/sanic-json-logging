@@ -1,11 +1,13 @@
 import logging
+
 from contextlib import contextmanager
 
-import sanic
-from sanic import response
 import pytest
+import sanic
 
-from sanic_json_logging import setup_json_logging, _task_factory
+from sanic import response
+
+from sanic_json_logging import _task_factory, setup_json_logging
 
 
 # For testing raw access log suppression
@@ -14,12 +16,12 @@ def no_log_app():
     # Create app
     app = sanic.Sanic("test_sanic_app")
 
-    logger = logging.getLogger('root')
+    logger = logging.getLogger("root")
 
-    @app.route("/test_get", methods=['GET'])
+    @app.route("/test_get", methods=["GET"])
     async def test_get(request):
-        logger.info('some informational message', extra={'test1': 'test'})
-        return response.text('')
+        logger.info("some informational message", extra={"test1": "test"})
+        return response.text("")
 
     yield app
 
@@ -41,15 +43,15 @@ def app():
     app = sanic.Sanic("test_sanic_app")
     setup_json_logging(app)
 
-    logger = logging.getLogger('root')
+    logger = logging.getLogger("root")
 
     async def log():
-        logger.info('some informational message', extra={'test1': 'test'})
+        logger.info("some informational message", extra={"test1": "test"})
 
-    @app.route("/test_get", methods=['GET'])
+    @app.route("/test_get", methods=["GET"])
     async def test_get(request):
         await log()
-        return response.text('')
+        return response.text("")
 
     yield app
 
@@ -64,15 +66,16 @@ def custom_class_log_app():
     # Create app
     app = sanic.Sanic("test_sanic_app")
 
-    logger = logging.getLogger('root')
+    logger = logging.getLogger("root")
 
-    @app.route("/test_get", methods=['GET'])
+    @app.route("/test_get", methods=["GET"])
     async def test_get(request):
         class MyClass:
             def __str__(self):
                 return "my class"
+
         logger.info(MyClass())
-        return response.text('')
+        return response.text("")
 
     yield app
 
@@ -87,17 +90,17 @@ def custom_class_log_test_cli(loop, custom_class_log_app, sanic_client):
 def app_alt():
     # Create app
     app = sanic.Sanic("test_sanic_app")
-    setup_json_logging(app, context_var='test1')
+    setup_json_logging(app, context_var="test1")
 
-    logger = logging.getLogger('root')
+    logger = logging.getLogger("root")
 
     async def log():
-        logger.info('some informational message', extra={'test1': 'test'})
+        logger.info("some informational message", extra={"test1": "test"})
 
-    @app.route("/test_get", methods=['GET'])
+    @app.route("/test_get", methods=["GET"])
     async def test_get(request):
         await log()
-        return response.text('')
+        return response.text("")
 
     yield app
 

@@ -8,30 +8,30 @@ import uuid
 from sanic_json_logging.formatters import LOGGING_CONFIG_DEFAULTS
 
 __version__ = "0.0.0"
-__all__ = ['setup_json_logging']
+__all__ = ["setup_json_logging"]
 
 PY_37 = sys.version_info[1] >= 7
 
 
-def setup_json_logging(app, configure_task_local_storage=True,
-                       context_var='sanicjsonlogging',
-                       disable_json_access_log=False):
+def setup_json_logging(
+    app, configure_task_local_storage=True, context_var="sanicjsonlogging", disable_json_access_log=False
+):
     """
     Sets up request logging
     """
     # Set up logging
-    LOGGING_CONFIG_DEFAULTS['formatters']['generic']['context'] = context_var
+    LOGGING_CONFIG_DEFAULTS["formatters"]["generic"]["context"] = context_var
     logging.config.dictConfig(LOGGING_CONFIG_DEFAULTS)
 
     if configure_task_local_storage:
         # Set task factory
         asyncio.get_event_loop().set_task_factory(lambda loop, coro: _task_factory(loop, coro, context_var))
 
-    req_logger = logging.getLogger('sanic.access')
+    req_logger = logging.getLogger("sanic.access")
 
     # Middleware to start a timer to gather request length.
     # Also generate a request ID, should really make request ID configurable
-    @app.middleware('request')
+    @app.middleware("request")
     async def log_json_pre(request):
         """
         Setup unique request ID and start time
@@ -52,21 +52,19 @@ def setup_json_logging(app, configure_task_local_storage=True,
 
             if current_task:
                 if hasattr(current_task, context_var):
-                    if isinstance(getattr(current_task, context_var), dict):  # Guard against different non-dict context objs
-                        getattr(current_task, context_var)['req_id'] = req_id
-                        getattr(current_task, context_var)['req_start'] = start_time
+                    # Guard against different non-dict context objs
+                    if isinstance(getattr(current_task, context_var), dict):
+                        getattr(current_task, context_var)["req_id"] = req_id
+                        getattr(current_task, context_var)["req_start"] = start_time
                 else:
-                    setattr(current_task, context_var, {
-                        'req_id': req_id,
-                        'req_start': time.perf_counter()
-                    })
+                    setattr(current_task, context_var, {"req_id": req_id, "req_start": time.perf_counter()})
 
     if not disable_json_access_log:
         # Prevent
         app.config.ACCESS_LOG = False
 
         # This performs the role of access logs
-        @app.middleware('response')
+        @app.middleware("response")
         async def log_json_post(request, response):
             """
             Calculate response time, then log access json
@@ -75,17 +73,19 @@ def setup_json_logging(app, configure_task_local_storage=True,
             :return:
             """
             # Pre middleware doesnt run on exception
-            if 'req_id' in request:
+            if "req_id" in request:
                 req_id = request.ctx.req_id
                 time_taken = time.perf_counter() - request.ctx.req_start
             else:
                 req_id = str(uuid.uuid4())
                 time_taken = -1
 
-            req_logger.info(None, extra={'request': request, 'response': response, 'time': time_taken, 'req_id': req_id})
+            req_logger.info(
+                None, extra={"request": request, "response": response, "time": time_taken, "req_id": req_id}
+            )
 
 
-def _task_factory(loop, coro, context_var='context') -> asyncio.Task:
+def _task_factory(loop, coro, context_var="context") -> asyncio.Task:
     """
     Task factory function
     Fuction closely mirrors the logic inside of
