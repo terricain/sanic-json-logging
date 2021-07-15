@@ -1,0 +1,65 @@
+[tool.poetry]
+name = "sanic-json-logging"
+version = "0.0.0"
+description = "Simple library to emit json formatted logs to stdout"
+authors = ["Terry Cain <terry@terrys-home.co.uk>"]
+license = "Apache-2.0"
+readme = "README.rst"
+homepage = "https://github.com/terrycain/sanic-json-logging"
+repository = "https://github.com/terrycain/sanic-json-logging"
+keywords = ["sanic", "json", "logging"]
+classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sanic = ">=21.6.0"
+
+[tool.poetry.dev-dependencies]
+black = "21.6b0"
+isort = "*"
+flake8 = "*"
+pytest = "*"
+pytest-sanic = "*"
+pytest-cov = "*"
+mypy = "*"
+
+[build-system]
+requires = ["poetry>=0.12", "poetry-dynamic-versioning"]
+build-backend = "poetry.masonry.api"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 120
+skip_gitignore = false
+lines_between_types = 1
+
+[tool.mypy]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["sanic_json_logging/__init__.py"]

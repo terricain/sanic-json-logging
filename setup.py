@@ -6,7 +6,10 @@ with open('README.rst') as readme_file:
 
 setup(
     name='sanic-json-logging',
-    version='3.2.0',
+    use_scm_version={
+        'tag_regex': r'^(?P<prefix>v)?(?P<version>[^\+]+)$',
+        'write_to': 'sanic_json_logging/version.py'
+    },
     description="Simple library to emit json formatted logs to stdout",
     long_description=readme,
     author="Terry Cain",
@@ -14,7 +17,7 @@ setup(
     url='https://github.com/terrycain/sanic-json-logging',
     packages=find_packages(include=['sanic_json_logging*']),
     include_package_data=True,
-    install_requires=['sanic>=19.12.0'],
+    install_requires=['sanic>=21.6.0'],
     license="Apache 2",
     zip_safe=False,
     keywords='sanic json logging',
@@ -29,4 +32,5 @@ setup(
     ],
     test_suite='tests',
     python_requires='>=3.6',
+    setup_requires=['setuptools_scm>=6.0.1']
 )

@@ -7,7 +7,7 @@ import uuid
 
 from sanic_json_logging.formatters import LOGGING_CONFIG_DEFAULTS
 
-
+__version__ = "0.0.0"
 __all__ = ['setup_json_logging']
 
 PY_37 = sys.version_info[1] >= 7
