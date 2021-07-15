@@ -6,16 +6,30 @@ import os
 import sys
 
 from collections import OrderedDict
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union, cast
+
+if TYPE_CHECKING:
+    from sanic import HTTPResponse, Request
+
+    class JSONLogRecord(logging.LogRecord):
+        type: str
+        request: Request
+        response: HTTPResponse
+        event_type: str
+        time: Union[float, int]
+        req_id: str
+        data: Any
+
 
 PY_37 = sys.version_info[1] >= 7
 
-LOGGING_CONFIG_DEFAULTS = dict(
+LOGGING_CONFIG_DEFAULTS: Dict[str, Any] = dict(
     version=1,
     disable_existing_loggers=False,
     filters={"no_keepalive_timeout": {"()": "sanic_json_logging.formatters.NoKeepaliveFilter"}},
     root={"level": "INFO", "handlers": ["console"]},
     loggers={
-        "root": {
+        "": {
             "level": "INFO",
             "handlers": [],
             "propagate": True,
@@ -55,7 +69,7 @@ LOGGING_CONFIG_DEFAULTS = dict(
 # Gets rid of annoying info level messages where
 # browser is sending connection keepalive header
 class NoKeepaliveFilter(logging.Filter):
-    def filter(self, record):
+    def filter(self, record: logging.LogRecord) -> bool:
         try:
             return "KeepAlive Timeout" not in record.msg
         except:  # noqa: E722
@@ -63,17 +77,19 @@ class NoKeepaliveFilter(logging.Filter):
 
 
 class JSONFormatter(logging.Formatter):
-    def __init__(self, *args, context_var="context", **kwargs):
+    def __init__(self, *args: Any, context_var: str = "context", **kwargs: Any) -> None:
         super(JSONFormatter, self).__init__(*args, **kwargs)
 
-        self._context_attr = LOGGING_CONFIG_DEFAULTS["formatters"]["generic"].get("context", context_var)
+        self._context_attr: str = LOGGING_CONFIG_DEFAULTS["formatters"]["generic"].get("context", context_var)
         self._pid = os.getpid()
 
     @staticmethod
-    def format_timestamp(time):
+    def format_timestamp(time: Union[int, float]) -> str:
         return datetime.datetime.utcfromtimestamp(time).isoformat() + "Z"
 
-    def format(self, record, serialize=True):
+    def format(self, record: logging.LogRecord) -> str:
+        record = cast("JSONLogRecord", record)
+
         try:
             msg = record.msg % record.args
         except TypeError:
@@ -144,10 +160,12 @@ class JSONFormatter(logging.Formatter):
 
 
 class JSONReqFormatter(JSONFormatter):
-    def format(self, record, serialize=True):
+    def format(self, record: logging.LogRecord) -> str:
+        record = cast("JSONLogRecord", record)
+
         # Create message dict
         try:
-            host = record.request.host
+            host: Optional[str] = record.request.host
         except:  # noqa: E722
             # Got a few errors with curl :/
             host = None
@@ -175,7 +193,7 @@ class JSONReqFormatter(JSONFormatter):
 
         if record.response is not None:  # not Websocket
             message["status_code"] = record.response.status
-            if hasattr(record.response, "body"):
+            if hasattr(record.response, "body") and record.response.body:
                 message["length"] = len(record.response.body)
             else:
                 message["length"] = -1
@@ -183,12 +201,5 @@ class JSONReqFormatter(JSONFormatter):
             message["type"] = "access"
         else:
             message["type"] = "ws_access"
-
-        # Can't remember why I added this
-        if "error_message" in record.request:
-            try:
-                message["request_info"]["error_message"] = record.request["error_message"]
-            except KeyError:
-                message["request_info"] = {"error_message": record.request["error_message"]}
 
         return json.dumps(message)

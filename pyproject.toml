@@ -27,7 +27,7 @@ black = "21.6b0"
 isort = "*"
 flake8 = "*"
 pytest = "*"
-pytest-sanic = "*"
+sanic-testing = "*"
 pytest-cov = "*"
 mypy = "*"
 

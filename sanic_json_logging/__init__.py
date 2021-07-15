@@ -5,17 +5,29 @@ import sys
 import time
 import uuid
 
+from typing import TYPE_CHECKING, Any, Generator
+
 from sanic_json_logging.formatters import LOGGING_CONFIG_DEFAULTS
+
+if TYPE_CHECKING:
+    import sanic
 
 __version__ = "0.0.0"
 __all__ = ["setup_json_logging"]
 
 PY_37 = sys.version_info[1] >= 7
+if PY_37:
+    current_task_func = asyncio.current_task
+else:
+    current_task_func = asyncio.Task.current_task
 
 
 def setup_json_logging(
-    app, configure_task_local_storage=True, context_var="sanicjsonlogging", disable_json_access_log=False
-):
+    app: "sanic.Sanic",
+    configure_task_local_storage: bool = True,
+    context_var: str = "sanicjsonlogging",
+    disable_json_access_log: bool = False,
+) -> None:
     """
     Sets up request logging
     """
@@ -31,8 +43,8 @@ def setup_json_logging(
 
     # Middleware to start a timer to gather request length.
     # Also generate a request ID, should really make request ID configurable
-    @app.middleware("request")
-    async def log_json_pre(request):
+    @app.middleware("request")  # type: ignore
+    async def log_json_pre(request: "sanic.Request") -> None:
         """
         Setup unique request ID and start time
         :param request: Web request
@@ -44,11 +56,7 @@ def setup_json_logging(
         request.ctx.req_start = start_time
 
         if configure_task_local_storage:
-
-            if PY_37:
-                current_task = asyncio.current_task()
-            else:
-                current_task = asyncio.Task.current_task()
+            current_task = current_task_func()
 
             if current_task:
                 if hasattr(current_task, context_var):
@@ -64,8 +72,8 @@ def setup_json_logging(
         app.config.ACCESS_LOG = False
 
         # This performs the role of access logs
-        @app.middleware("response")
-        async def log_json_post(request, response):
+        @app.middleware("response")  # type: ignore
+        async def log_json_post(request: "sanic.Request", response: "sanic.HTTPResponse") -> None:
             """
             Calculate response time, then log access json
             :param request: Web request
@@ -73,10 +81,10 @@ def setup_json_logging(
             :return:
             """
             # Pre middleware doesnt run on exception
-            if "req_id" in request:
+            try:
                 req_id = request.ctx.req_id
                 time_taken = time.perf_counter() - request.ctx.req_start
-            else:
+            except Exception:
                 req_id = str(uuid.uuid4())
                 time_taken = -1
 
@@ -85,7 +93,9 @@ def setup_json_logging(
             )
 
 
-def _task_factory(loop, coro, context_var="context") -> asyncio.Task:
+def _task_factory(
+    loop: asyncio.AbstractEventLoop, coro: Generator[Any, None, Any], context_var: str = "context"
+) -> asyncio.Task:
     """
     Task factory function
     Fuction closely mirrors the logic inside of
@@ -94,14 +104,9 @@ def _task_factory(loop, coro, context_var="context") -> asyncio.Task:
     with the new task
     """
     task = asyncio.Task(coro, loop=loop)
-    if task._source_traceback:  # flake8: noqa
-        del task._source_traceback[-1]  # flake8: noqa
 
     # Share context with new task if possible
-    if PY_37:
-        current_task = asyncio.current_task(loop=loop)
-    else:
-        current_task = asyncio.Task.current_task(loop=loop)
+    current_task = current_task_func(loop=loop)
 
     if current_task is not None and hasattr(current_task, context_var):
         setattr(task, context_var, getattr(current_task, context_var))
