@@ -8,12 +8,7 @@ import sanic
 from sanic import response
 from sanic_testing import TestManager
 
-from sanic_json_logging import _task_factory, setup_json_logging
-
-
-@pytest.fixture(autouse=True)
-def set_task_factory(loop):
-    loop.set_task_factory(_task_factory)
+from sanic_json_logging import setup_json_logging
 
 
 # For testing json
