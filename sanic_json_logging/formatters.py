@@ -29,11 +29,6 @@ LOGGING_CONFIG_DEFAULTS: Dict[str, Any] = dict(
     filters={"no_keepalive_timeout": {"()": "sanic_json_logging.formatters.NoKeepaliveFilter"}},
     root={"level": "INFO", "handlers": ["console"]},
     loggers={
-        "": {
-            "level": "INFO",
-            "handlers": [],
-            "propagate": True,
-        },
         "sanic.error": {"level": "INFO", "handlers": ["console"], "propagate": False, "qualname": "sanic.error"},
         "sanic.root": {"level": "INFO", "handlers": [], "propagate": False, "qualname": "sanic.root"},
         "sanic.access": {
