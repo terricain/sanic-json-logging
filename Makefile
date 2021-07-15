@@ -1,36 +1,14 @@
-# Taken from aiomysql :D
-FLAGS=
-
-flake:
-	flake8 sanic_json_logging tests examples
+lint:
+	poetry run flake8 sanic_json_logging tests examples
+	poetry run black -l 120 .
+	poetry run isort --profile black --line-length 120 .
+	poetry run mypy sanic_json_logging
 
 test: flake
-	py.test -s $(FLAGS) ./tests/
-
-vtest:
-	py.test -s -v $(FLAGS) ./tests/
-
-cov cover coverage: flake
-	py.test -s -v  --cov-report term --cov-report html --cov sanic_json_logging ./tests
-	@echo "open file://`pwd`/htmlcov/index.html"
-
-clean:
-	rm -rf `find . -name __pycache__`
-	rm -f `find . -type f -name '*.py[co]' `
-	rm -f `find . -type f -name '*~' `
-	rm -f `find . -type f -name '.*~' `
-	rm -f `find . -type f -name '@*' `
-	rm -f `find . -type f -name '#*#' `
-	rm -f `find . -type f -name '*.orig' `
-	rm -f `find . -type f -name '*.rej' `
-	rm -f .coverage
-	rm -rf coverage
-	rm -rf build
-	rm -rf htmlcov
-	rm -rf dist
+	poetry run pytest
 
 doc:
 	make -C docs html
 	@echo "open file://`pwd`/docs/_build/html/index.html"
 
-.PHONY: all flake test vtest cov clean doc
+.PHONY: lint test doc

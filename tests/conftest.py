@@ -1,32 +1,14 @@
 import logging
+
 from contextlib import contextmanager
 
-import sanic
-from sanic import response
 import pytest
+import sanic
 
-from sanic_json_logging import setup_json_logging, _task_factory
+from sanic import response
+from sanic_testing import TestManager
 
-
-# For testing raw access log suppression
-@pytest.fixture
-def no_log_app():
-    # Create app
-    app = sanic.Sanic("test_sanic_app")
-
-    logger = logging.getLogger('root')
-
-    @app.route("/test_get", methods=['GET'])
-    async def test_get(request):
-        logger.info('some informational message', extra={'test1': 'test'})
-        return response.text('')
-
-    yield app
-
-
-@pytest.fixture
-def no_log_test_cli(loop, no_log_app, sanic_client):
-    return loop.run_until_complete(sanic_client(no_log_app))
+from sanic_json_logging import _task_factory, setup_json_logging
 
 
 @pytest.fixture(autouse=True)
@@ -36,75 +18,44 @@ def set_task_factory(loop):
 
 # For testing json
 @pytest.fixture
-def app():
+def generic_app():
     # Create app
-    app = sanic.Sanic("test_sanic_app")
+    app = sanic.Sanic("generic_app")
+    TestManager(app)
     setup_json_logging(app)
 
-    logger = logging.getLogger('root')
+    logger = logging.getLogger("myapplogger")
 
     async def log():
-        logger.info('some informational message', extra={'test1': 'test'})
+        logger.info("some informational message", extra={"test1": "test"})
 
-    @app.route("/test_get", methods=['GET'])
+    @app.route("/test_get", methods=["GET"])
     async def test_get(request):
         await log()
-        return response.text('')
+        return response.text("")
 
-    yield app
-
-
-@pytest.fixture
-def test_cli(loop, app, sanic_client):
-    return loop.run_until_complete(sanic_client(app))
+    return app
 
 
 @pytest.fixture
-def custom_class_log_app():
+def custom_log_app():
     # Create app
-    app = sanic.Sanic("test_sanic_app")
+    app = sanic.Sanic("custom_log_app")
+    TestManager(app)
+    setup_json_logging(app)
 
-    logger = logging.getLogger('root')
+    logger = logging.getLogger("myapplogger")
 
-    @app.route("/test_get", methods=['GET'])
+    @app.route("/test_get", methods=["GET"])
     async def test_get(request):
         class MyClass:
             def __str__(self):
                 return "my class"
+
         logger.info(MyClass())
-        return response.text('')
+        return response.text("")
 
-    yield app
-
-
-@pytest.fixture
-def custom_class_log_test_cli(loop, custom_class_log_app, sanic_client):
-    return loop.run_until_complete(sanic_client(custom_class_log_app))
-
-
-# For testing alternate context_var
-@pytest.fixture
-def app_alt():
-    # Create app
-    app = sanic.Sanic("test_sanic_app")
-    setup_json_logging(app, context_var='test1')
-
-    logger = logging.getLogger('root')
-
-    async def log():
-        logger.info('some informational message', extra={'test1': 'test'})
-
-    @app.route("/test_get", methods=['GET'])
-    async def test_get(request):
-        await log()
-        return response.text('')
-
-    yield app
-
-
-@pytest.fixture
-def test_alt_cli(loop, app_alt, sanic_client):
-    return loop.run_until_complete(sanic_client(app_alt))
+    return app
 
 
 @pytest.fixture
