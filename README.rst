@@ -88,8 +88,39 @@ And if you log to the ``root`` logger, inside a request, it'll look like this.
 Changelog
 ---------
 
-1.3.0 - Added Request ID to `request` dict, fixed move to travis.com
+4.0.0
+=====
+* Added flake8, black, isort, mypy
+* Dropped Travis in favour of Github Actions
+* Switched from setup.py to using Poetry
+* Updated tests to use ``sanic-testing``
 
-1.2.0 - Fixed UA header bug, fixed tests
+3.2.0
+=====
+* Updated to use new ``request.ctx`` context dictionary
+* Added support for Python 3.7 asyncio changes
 
-1.1.1 - Pretty much first decent version
+3.1.0
+=====
+* Stringify any LogRecord message if its not JSON serializable
+
+3.0.0
+=====
+* Added option to disable task local storage
+
+2.0.0
+=====
+* Removed NoAccessLogSanic subclass in favour of setup argument
+
+1.3.0
+=====
+* Added Request ID to ``request`` dict
+* fixed move to travis.com
+
+1.2.0
+=====
+* Fixed UA header bug, fixed tests
+
+1.1.1
+=====
+* Pretty much first decent version
