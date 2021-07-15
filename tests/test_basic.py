@@ -1,4 +1,5 @@
 import json
+
 import pytest
 
 from sanic_json_logging.formatters import JSONFormatter, JSONReqFormatter
@@ -45,14 +46,14 @@ async def test_json_custom_class_logging(custom_log_app, logs):
                 rec = access_formatter.format(log_record)
                 rec = json.loads(rec)
 
-                access_req_id = rec['req_id']
+                access_req_id = rec["req_id"]
 
             else:
                 rec = formatter.format(log_record)
                 rec = json.loads(rec)
                 assert rec["message"] == "my class"
 
-                log_req_id = rec['req_id']
+                log_req_id = rec["req_id"]
 
         assert access_req_id is not None
         assert log_req_id == access_req_id
