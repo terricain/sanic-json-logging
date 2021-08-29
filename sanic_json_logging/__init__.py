@@ -32,6 +32,9 @@ def setup_json_logging(
     Sets up request logging
     """
     # Set up logging
+    if disable_json_access_log:  # Remove formatting the access log if we've disabled it.
+        del LOGGING_CONFIG_DEFAULTS["loggers"]["sanic.access"]
+
     LOGGING_CONFIG_DEFAULTS["formatters"]["generic"]["context"] = context_var
     logging.config.dictConfig(LOGGING_CONFIG_DEFAULTS)
 

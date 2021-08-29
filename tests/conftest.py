@@ -29,6 +29,15 @@ def generic_app():
         await log()
         return response.text("")
 
+    @app.route("/test_exception", methods=["GET"])
+    async def test_exception(request):
+        try:
+            raise ValueError("ugh")
+        except ValueError as err:
+            logger.exception("some exception", exc_info=err)
+
+        return response.text("")
+
     return app
 
 

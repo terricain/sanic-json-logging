@@ -27,6 +27,27 @@ async def test_json_access_logging(generic_app, logs):
 
 
 @pytest.mark.asyncio
+async def test_json_error_logging(generic_app, logs):
+    """
+    GET request
+    """
+    formatter = JSONFormatter()
+
+    with logs("sanic.access") as caplog:
+        _, resp = await generic_app.asgi_client.get("/test_exception")
+        assert resp.status == 200
+
+        # We should get no access logging
+        for log_record in caplog.records:
+            if log_record.name == "myapplogger":
+                rec = formatter.format(log_record)
+                rec = json.loads(rec)
+                # Check log record has data passed from access logging middleware
+                assert rec['traceback']
+                assert rec['type'] == 'exception'
+
+
+@pytest.mark.asyncio
 async def test_json_custom_class_logging(custom_log_app, logs):
     """
     GET request

@@ -34,7 +34,7 @@ Look at ``examples/simple.py`` for a full working example, but this will essenti
     import sanic
     from sanic_json_logging import setup_json_logging
 
-    app = sanic.Sanic()
+    app = sanic.Sanic(name="somename")
     setup_json_logging(app)
 
 
