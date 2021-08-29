@@ -43,8 +43,8 @@ async def test_json_error_logging(generic_app, logs):
                 rec = formatter.format(log_record)
                 rec = json.loads(rec)
                 # Check log record has data passed from access logging middleware
-                assert rec['traceback']
-                assert rec['type'] == 'exception'
+                assert rec["traceback"]
+                assert rec["type"] == "exception"
 
 
 @pytest.mark.asyncio
