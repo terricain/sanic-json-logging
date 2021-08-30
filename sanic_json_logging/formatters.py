@@ -139,7 +139,7 @@ class JSONFormatter(logging.Formatter):
         # TODO log an error if json.dumps fails
         return json.dumps(message)
 
-    def formatTraceback(self, record):
+    def formatTraceback(self, record: logging.LogRecord) -> str:
         exc = ""
         if record.exc_info:
             # Cache the traceback text to avoid converting it multiple times

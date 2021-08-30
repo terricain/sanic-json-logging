@@ -27,7 +27,7 @@ def setup_json_logging(
     configure_task_local_storage: bool = True,
     context_var: str = "sanicjsonlogging",
     disable_json_access_log: bool = False,
-    config: dict = LOGGING_CONFIG_DEFAULTS
+    config: dict = LOGGING_CONFIG_DEFAULTS,
 ) -> None:
     """
     Sets up request logging

@@ -61,5 +61,6 @@ target/
 # pyenv python configuration file
 .python-version
 
+.mypy_cache/
 .pytest_cache/
 htmlcov/
