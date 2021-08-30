@@ -146,6 +146,11 @@ After all your tracebacks are formatted properly as JSON:
 Changelog
 ---------
 
+4.1.0
+=====
+* Added ability to set custom formatters
+* Added optional extensive traceback formatter
+
 4.0.1
 =====
 * properly disable access logs
