@@ -85,8 +85,70 @@ And if you log to the ``root`` logger, inside a request, it'll look like this.
       "req_id": "795617c7-b514-4ed9-bb63-cc4fcd883c3d"
     }
 
+By default this package logs Exceptions with tracebacks as strings, you might want to render the traceback as JSON aswell. To achieve this simply provide an alternate formatter.
+First install this package with its optional dependencies:
+
+.. code-block:: bash
+
+    pip install sanic-json-logging[extratb]
+
+Then inject another Formatter:
+
+
+.. code-block:: python
+
+        from sanic_json_logging import LOGGING_CONFIG_DEFAULTS as cfg
+
+        cfg["formatters"]["generic"]["class"] = "sanic_json_logging.formatters.JSONTracebackJSONFormatter"
+        setup_json_logging(app, disable_json_access_log=True, config=cfg)
+
+After all your tracebacks are formatted properly as JSON:
+
+.. code-block:: json
+
+  {
+    "timestamp": "2021-08-26T23:19:49.412293Z",
+    "level": "ERROR",
+    "message": "Exception occurred while handling uri: 'http://127.0.0.1:8000/'",
+    "type": "exception",
+    "logger": "sanic.error",
+    "worker": 31915,
+    "filename": "handlers.py",
+    "lineno": 146,
+    "traceback": {
+      "exc_type": "Exception",
+      "exc_msg": "foo",
+      "exc_tb": {
+        "frames": [
+          {
+            "func_name": "handle_request",
+            "lineno": 770,
+            "module_name": "sanic.app",
+            "module_path": "/python3.9/site-packages/sanic/app.py",
+            "lasti": 182,
+            "line": "                    response = await response"
+          },
+          {
+            "func_name": "root",
+            "lineno": 20,
+            "module_name": "api.general",
+            "module_path": "/api/general.py",
+            "lasti": 6,
+            "line": "    raise Exception(\"foo\")"
+          }
+        ]
+      }
+    },
+    "req_id": "f128370f-b949-44e7-bb94-4635bbcad486"
+  }
+
+
 Changelog
 ---------
+
+4.0.1
+=====
+* properly disable access logs
 
 4.0.0
 =====

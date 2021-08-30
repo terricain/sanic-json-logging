@@ -96,21 +96,7 @@ class JSONFormatter(logging.Formatter):
             msg_type = "log"
 
         # Deal with tracebacks
-        exc = ""
-        if record.exc_info:
-            # Cache the traceback text to avoid converting it multiple times
-            # (it's constant anyway)
-            if not record.exc_text:
-                record.exc_text = self.formatException(record.exc_info)
-        if record.exc_text:
-            if exc[-1:] != "\n":
-                exc += "\n"
-            exc += record.exc_text
-        if record.stack_info:
-            if exc[-1:] != "\n":
-                exc += "\n"
-            exc += self.formatStack(record.stack_info)
-        exc = exc.lstrip("\n").replace("\n", "<br>")
+        exc = self.formatTraceback(record)
 
         # convert to string if not primitive JSON dump values
         # https://docs.python.org/3/library/json.html#json.JSONDecoder
@@ -152,6 +138,24 @@ class JSONFormatter(logging.Formatter):
 
         # TODO log an error if json.dumps fails
         return json.dumps(message)
+
+    def formatTraceback(self, record):
+        exc = ""
+        if record.exc_info:
+            # Cache the traceback text to avoid converting it multiple times
+            # (it's constant anyway)
+            if not record.exc_text:
+                record.exc_text = self.formatException(record.exc_info)
+        if record.exc_text:
+            if exc[-1:] != "\n":
+                exc += "\n"
+            exc += record.exc_text
+        if record.stack_info:
+            if exc[-1:] != "\n":
+                exc += "\n"
+            exc += self.formatStack(record.stack_info)
+        exc = exc.lstrip("\n").replace("\n", "<br>")
+        return exc
 
 
 class JSONReqFormatter(JSONFormatter):
@@ -198,3 +202,10 @@ class JSONReqFormatter(JSONFormatter):
             message["type"] = "ws_access"
 
         return json.dumps(message)
+
+
+class JSONTracebackJSONFormatter(JSONFormatter):
+    def formatStack(self, stack_info: str) -> str:
+        from boltons import tbutils
+
+        return tbutils.ExceptionInfo.from_current().to_dict()
