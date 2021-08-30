@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from sanic_json_logging.formatters import JSONFormatter, JSONReqFormatter
+from sanic_json_logging.formatters import JSONFormatter, JSONReqFormatter, JSONTracebackJSONFormatter
 
 
 @pytest.mark.asyncio
@@ -78,3 +78,26 @@ async def test_json_custom_class_logging(custom_log_app, logs):
 
         assert access_req_id is not None
         assert log_req_id == access_req_id
+
+
+@pytest.mark.asyncio
+async def test_json_traceback_error_logging(json_tb_app, logs):
+    """
+    GET request
+    """
+
+    formatter = JSONTracebackJSONFormatter()
+
+    with logs("sanic.error") as caplog:
+        _, resp = await json_tb_app.asgi_client.get("/test_exception")
+        assert resp.status == 500
+
+        # We should get no access logging
+        for log_record in caplog.records:
+            if log_record.name == "sanic.error":
+                rec = formatter.format(log_record)
+                rec = json.loads(rec)
+                # Check log record has data passed from access logging middleware
+                assert rec["traceback"]
+                assert rec["type"] == "exception"
+                assert rec["traceback"]["exc_msg"] == "foo"

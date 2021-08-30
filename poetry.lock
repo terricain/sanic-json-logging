@@ -80,7 +80,7 @@ name = "boltons"
 version = "21.0.0"
 description = "When they're not builtins, they're boltons."
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -495,7 +495,7 @@ extratb = ["boltons"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3247b433df098c418a6c0bfd3941c3dfc50419ab6cf850727deab1826e7d0c40"
+content-hash = "8d3eed913e2ae6d2d6c4a2eff02cd602ac9b86602e84a617530e2511cdd63125"
 
 [metadata.files]
 aiofiles = [

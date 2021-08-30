@@ -32,6 +32,7 @@ pytest = "*"
 sanic-testing = "*"
 pytest-cov = "*"
 mypy = "*"
+boltons = "*"
 
 [tool.poetry.extras]
 extratb = ["boltons"]
