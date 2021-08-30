@@ -205,7 +205,7 @@ class JSONReqFormatter(JSONFormatter):
 
 
 class JSONTracebackJSONFormatter(JSONFormatter):
-    def formatStack(self, stack_info: str) -> str:
+    def formatTraceback(self, record: logging.LogRecord) -> str:
         from boltons import tbutils
 
         return tbutils.ExceptionInfo.from_current().to_dict()
