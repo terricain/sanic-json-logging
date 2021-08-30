@@ -202,3 +202,10 @@ class JSONReqFormatter(JSONFormatter):
             message["type"] = "ws_access"
 
         return json.dumps(message)
+
+
+class JSONTracebackJSONFormatter(JSONFormatter):
+    def formatStack(self, stack_info: str) -> str:
+        from boltons import tbutils
+
+        return tbutils.ExceptionInfo.from_current().to_dict()

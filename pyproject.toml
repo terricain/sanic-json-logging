@@ -32,6 +32,9 @@ sanic-testing = "*"
 pytest-cov = "*"
 mypy = "*"
 
+[tool.poetry.extras]
+extratb = ["boltons"]
+
 [build-system]
 requires = ["poetry>=0.12", "poetry-dynamic-versioning"]
 build-backend = "poetry.masonry.api"
