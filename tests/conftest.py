@@ -73,3 +73,21 @@ def logs(caplog):
         logger.removeHandler(caplog.handler)
 
     return _f
+
+
+@pytest.fixture
+def json_tb_app():
+    # Create app
+    app = sanic.Sanic("json_tb_app")
+    TestManager(app)
+    from sanic_json_logging import LOGGING_CONFIG_DEFAULTS as cfg
+
+    cfg["formatters"]["generic"]["class"] = "sanic_json_logging.formatters.JSONTracebackJSONFormatter"
+    setup_json_logging(app, config=cfg)
+
+    @app.route("/test_exception", methods=["GET"])
+    async def test_get(request):
+        raise Exception("foo")
+        return response.text("")
+
+    return app

@@ -208,4 +208,7 @@ class JSONTracebackJSONFormatter(JSONFormatter):
     def formatTraceback(self, record: logging.LogRecord) -> str:
         from boltons import tbutils
 
-        return tbutils.ExceptionInfo.from_current().to_dict()
+        if not hasattr(record, "exc_info") or len(record.exc_info) < 3:
+            return None
+
+        return tbutils.ExceptionInfo.from_exc_info(*record.exc_info).to_dict()
