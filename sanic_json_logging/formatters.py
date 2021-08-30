@@ -119,7 +119,7 @@ class JSONFormatter(logging.Formatter):
         elif msg_type == "event":
             message["event_type"] = record.event_type
 
-        if len(exc) > 0:
+        if exc:
             message["traceback"] = exc
             message["type"] = "exception"
         if hasattr(record, "data"):
@@ -139,7 +139,7 @@ class JSONFormatter(logging.Formatter):
         # TODO log an error if json.dumps fails
         return json.dumps(message)
 
-    def formatTraceback(self, record: logging.LogRecord) -> str:
+    def formatTraceback(self, record: logging.LogRecord) -> Optional[str]:
         exc = ""
         if record.exc_info:
             # Cache the traceback text to avoid converting it multiple times
@@ -155,7 +155,8 @@ class JSONFormatter(logging.Formatter):
                 exc += "\n"
             exc += self.formatStack(record.stack_info)
         exc = exc.lstrip("\n").replace("\n", "<br>")
-        return exc
+
+        return None if not exc else exc
 
 
 class JSONReqFormatter(JSONFormatter):
@@ -205,10 +206,10 @@ class JSONReqFormatter(JSONFormatter):
 
 
 class JSONTracebackJSONFormatter(JSONFormatter):
-    def formatTraceback(self, record: logging.LogRecord) -> str:
+    def formatTraceback(self, record: logging.LogRecord) -> Optional[str]:
         from boltons import tbutils
 
-        if not hasattr(record, "exc_info") or len(record.exc_info) < 3:
+        if not hasattr(record, "exc_info") or (record.exc_info and len(record.exc_info) < 3):
             return None
 
         return tbutils.ExceptionInfo.from_exc_info(*record.exc_info).to_dict()
