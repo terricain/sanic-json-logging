@@ -36,7 +36,12 @@ def setup_json_logging(
     if disable_json_access_log:  # Remove formatting the access log if we've disabled it.
         del config["loggers"]["sanic.access"]
 
+    if "formatters" not in config:
+        config["formatters"] = LOGGING_CONFIG_DEFAULTS["formatters"]
+    if "generic" not in config["formatters"]:
+        config["formatters"]["generic"] = LOGGING_CONFIG_DEFAULTS["formatters"]["generic"]
     config["formatters"]["generic"]["context"] = context_var
+
     logging.config.dictConfig(config)
 
     if configure_task_local_storage:
