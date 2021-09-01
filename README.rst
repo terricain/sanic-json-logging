@@ -146,6 +146,10 @@ After all your tracebacks are formatted properly as JSON:
 Changelog
 ---------
 
+4.1.2
+=====
+* @digitalkaoz fixed more bugs with the traceback formatter
+
 4.1.1
 =====
 * Updated tests for alternative traceback formatter
