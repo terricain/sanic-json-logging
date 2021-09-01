@@ -86,8 +86,19 @@ def json_tb_app():
     setup_json_logging(app, config=cfg)
 
     @app.route("/test_exception", methods=["GET"])
-    async def test_get(request):
+    async def test_exception(request):
         raise Exception("foo")
+        return response.text("")
+
+    @app.route("/test_get", methods=["GET"])
+    async def test_get(request):
+        logger = logging.getLogger("sanic.info")
+
+        class MyClass:
+            def __str__(self):
+                return "my class"
+
+        logger.info(MyClass())
         return response.text("")
 
     return app

@@ -101,3 +101,16 @@ async def test_json_traceback_error_logging(json_tb_app, logs):
                 assert rec["traceback"]
                 assert rec["type"] == "exception"
                 assert rec["traceback"]["exc_msg"] == "foo"
+
+    with logs("sanic.info") as caplog:
+        _, resp = await json_tb_app.asgi_client.get("/test_get")
+        assert resp.status == 200
+
+        # We should get no access logging
+        for log_record in caplog.records:
+            if log_record.name == "sanic.info":
+                rec = formatter.format(log_record)
+                rec = json.loads(rec)
+                # Check log record has data passed from access logging middleware
+                assert not hasattr(rec, "traceback")
+                assert rec["type"] == "log"
